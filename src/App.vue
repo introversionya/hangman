@@ -1,47 +1,23 @@
 <script setup lang="ts">
-import HelloWorld from './components/HelloWorld.vue'
-import TheWelcome from './components/TheWelcome.vue'
+import GameHeader from './components/GameHeader.vue'
+import GameFigure from './components/GameFigure.vue'
+import GameWrongLetters from './components/GameWrongLetters.vue'
+import GameWord from './components/GameWord.vue'
+import GamePopup from './components/GamePopup.vue'
+import GameNotification from './components/GameNotification.vue'
 </script>
 
 <template>
-  <header>
-    <img alt="Vue logo" class="logo" src="./assets/logo.svg" width="125" height="125" />
+  <GameHeader />
+  <div class="game-container">
+    <GameFigure />
+    <GameWrongLetters />
+    <GameWord />
+  </div>
 
-    <div class="wrapper">
-      <HelloWorld msg="You did it!" />
-    </div>
-  </header>
+  <!-- Container for final message -->
+  <GamePopup />
 
-  <main>
-    <TheWelcome />
-  </main>
+  <!-- Notification -->
+  <GameNotification />
 </template>
-
-<style scoped>
-header {
-  line-height: 1.5;
-}
-
-.logo {
-  display: block;
-  margin: 0 auto 2rem;
-}
-
-@media (min-width: 1024px) {
-  header {
-    display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
-  }
-
-  .logo {
-    margin: 0 2rem 0 0;
-  }
-
-  header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
-  }
-}
-</style>
