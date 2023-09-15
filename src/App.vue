@@ -5,32 +5,16 @@ import GameWrongLetters from './components/GameWrongLetters.vue'
 import GameWord from './components/GameWord.vue'
 import GamePopup from './components/GamePopup.vue'
 import GameNotification from './components/GameNotification.vue'
-import { ref, computed, watch } from 'vue'
-import axios from 'axios'
+import { ref, watch } from 'vue'
+import { useRandomWord } from './composables/useRandomWord'
+import { useLetters } from './composables/useLetters'
+import { useNotification } from './composables/useNotification'
 
-const word = ref('')
+const { word, getRandomWord } = useRandomWord()
+const { letters, correctLetters, wrongLetters, isLose, isWin, addLetter, resetLetters } = useLetters(word)
+const { notification, showNotification} = useNotification()
 
-const getRandomWord = async () => {
-  try {
-    const { data } = await axios<{ FirstName: string }>(
-      'https://api.randomdatatools.ru/?unescaped=false&params=FirstName'
-    )
-    word.value = data.FirstName.toLocaleLowerCase()
-  } catch (err) {
-    console.log(err)
-    word.value = ''
-  }
-}
-
-getRandomWord()
-
-const letters = ref<string[]>([])
-const correctLetters = computed(() => letters.value.filter((x) => word.value.includes(x)))
-const wrongLetters = computed(() => letters.value.filter((x) => !word.value.includes(x)))
-const notification = ref<InstanceType<typeof GameNotification> | null>(null)
 const popup = ref<InstanceType<typeof GamePopup> | null>(null)
-const isWin = computed(() => [...word.value].every((x) => correctLetters.value.includes(x)))
-const isLose = computed(() => wrongLetters.value.length === 6)
 
 watch(wrongLetters, () => {
   if (isLose.value) {
@@ -50,19 +34,16 @@ window.addEventListener('keydown', ({ key }) => {
   }
 
   if (letters.value.includes(key)) {
-    notification.value?.open()
-    setTimeout(() => notification.value?.close(), 2000)
+    showNotification()
     return
   }
 
-  if (/[а-яА-ЯёЁ]/.test(key)) {
-    letters.value.push(key.toLocaleLowerCase())
-  }
+  addLetter(key)
 })
 
 const restart = async () => {
   await getRandomWord()
-  letters.value = []
+  resetLetters()
   popup.value?.close()
 }
 </script>
